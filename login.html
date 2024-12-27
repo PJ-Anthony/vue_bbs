@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			body{
+				width: 100%;
+				height: 100%;
+			}
+			.login_container{
+				background-color:whitesmoke;
+				border-radius: 10px;
+				width:40%;
+				
+				top: 50%;
+				left: 50%;
+				position: absolute;
+				transform: translate(-50%,-50%);
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+				gap: 10px;
+			}
+			.login_input{
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 20px;
+			}
+		</style>
+		<script src="./js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/ajax.js"></script>
+		<script src="./js/public.js"></script>
+	</head>
+	<body>
+		<div class="login_container" id="app">
+			<h2>欢迎进入查看留言系统</h2>
+			<div class="login_input">
+				<div>用户名:<input type="text" v-model="dd.loginId"/></div>
+				<div>密&nbsp;&nbsp;&nbsp;码:<input type="password" v-model="dd.loginPwd"/></div>
+				<button v-on:click="login()">登录</button>
+				<span v-show="isShow">用户名或密码输入错误</span>
+			</div>
+		</div>
+		<script>
+			let v=new Vue({
+				el:"#app",
+				data:{
+					dd:{
+						loginId:"",
+						loginPwd:""
+					},
+					isShow:false
+				},
+				methods:{
+					login:function(){
+						let url=BASEURL+"/user/login.action";
+						getJson(url,this.dd,(d)=>{
+							console.log(this.dd)
+							if(d.errorcode==0){
+								sessionStorage.setItem("info",JSON.stringify(d.result.user));
+								location.href="index.html";
+							}
+							else{
+							alert("用户名或密码错误!");
+							}
+						})
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

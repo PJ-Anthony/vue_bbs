@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<style>
+			body{
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+			.bg{
+				width: 100%;
+				border: 0px red solid;
+				height: 2rem;
+				font-size: 1.5rem;
+				background-color: azure;
+				border-radius: 10px;
+			}
+			.imgDiv{
+				border-radius: 50%;
+				height: 5rem;
+				width: 5rem;
+			}
+			.msg{
+				display: flex;
+				
+				border: 0px red solid;
+				width: 100%;
+				height: 6rem;
+				align-items: center;
+				gap: 30px;
+				background-color: aliceblue;
+				border-radius: 10px;
+				margin-bottom:10px;
+				transition-duration: 0.5s;
+			}
+			.msg:hover{
+				background-color: #91b9bf;
+			}
+			.content{
+				border: 0px red solid;
+				width: 80%;
+				display: flex;
+				flex-direction: column;
+				gap: 10px;
+			}
+			.content_msg{
+				border: 0px red solid;
+			}
+		</style>
+		<script src="./js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/ajax.js"></script>
+		<script src="./js/public.js"></script>
+	</head>
+	<body >
+		<div class="bg">
+			最新留言。。。。
+		</div>
+		<div id="app">
+			<div class="msg"  v-for="item in array">
+				<img v-bind:src="BASEURL+'/'+(myId==item.fromUser.loginId?item.toUser.headPicUrl:item.fromUser.headPicUrl)" alt="" class="imgDiv"/>
+				<div class="content" >
+					<div class="content_msg">{{item.fromUser.nickName}}对{{item.toUser.nickName}}说:</div>
+					<div class="content_msg">{{item.info}}</div>
+					<div class="content_msg">{{item.time}}</div>
+				</div>
+			</div>
+		</div>
+		
+		<script>
+			window.onload=()=>{
+				loadData();
+			}
+			function loadData(){
+				let v=new Vue({
+					el:"#app",
+					data:{
+						array:[],
+						BASEURL:BASEURL,
+						myId:''
+						
+					},
+					created:function(){
+						let url=BASEURL+"/message/find.action";
+						let data;
+						postJson(url,data,(d)=>{
+							this.array=d.result.messages;
+							this.select();
+							this.myId=JSON.parse(sessionStorage.getItem('info')).loginId;
+						});
+						
+					},
+					methods: {
+					    select:function(){
+						let newArray=[];
+						let myId=JSON.parse(sessionStorage.getItem("info")).loginId;
+						for(let i in this.array){
+							if(myId!=this.array[i].fromUser.loginId&&myId!=this.array[i].toUser.loginId||this.array[i].fromUser==undefined){
+								continue;
+							}
+							else{
+								newArray[i]=this.array[i];
+							}
+						}
+						this.array=newArray;
+						
+						}
+					}
+				})
+			}
+		</script>
+	</body>
+</html>

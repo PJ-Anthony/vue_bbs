@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+		<style>
+			body{
+				width: 100%;
+				height:  43rem;
+				display: flex;
+				flex-direction: row;
+				gap: 40px;
+			}
+			.left_div{
+				background-color: antiquewhite;
+				width: 30%;
+				height: 100%;
+				border-radius: 10px;
+				display: flex;
+				justify-content: center;
+				box-shadow: 2px 2px 4px rgb(0, 0, 0,0.1);
+			}
+			.right_div{
+				background-color:aliceblue;
+				width: 65%;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				justify-content: center;
+				gap: 20px;
+				border-radius: 10px;
+				box-shadow: 2px 2px 4px rgb(0, 0, 0,0.5);
+			}
+			.loginInfo{
+				display: flex;
+				width: 90%;
+				height: 15%;
+				border: 0px red solid;
+				align-items: center;
+				gap: 20px;
+				background-color: aliceblue;
+				margin-top: 10%;
+				border-radius: 10px;
+				box-shadow: 2px 2px 4px rgb(0, 0, 0,0.5);
+			}
+			.imgInfo{
+				border: 0px red solid;
+				border-radius: 50%;
+				width: 6rem;
+				height: 6rem;
+			}
+			.iframe_div{
+				border:0px red solid;
+				width: 90%;
+				height: 80%;
+			}
+			.search_div{
+				border:0px red solid;
+				text-align: center;
+			}
+			.myIframe{
+				border:0px red solid;
+				width: 100%;
+				height: 95%;
+				background-color: lightblue;
+				border-radius: 10px;
+			}
+		</style>
+		<script src="./js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script src="./js/ajax.js"></script>
+		<script src="./js/public.js"></script>
+	</head>
+	<body>
+		<div class="left_div" id="app">
+			<div class="loginInfo">
+				<img v-bind:src="imgUrl" alt="" class="imgInfo"/>
+				<div>
+					<span>用户名:{{name}}</span>
+					&nbsp;
+					<button v-on:click="logout()">注销</button>
+				</div>
+			</div>
+		</div>
+		<div class="right_div">
+			<h1>QQ留言</h1>
+			<div class="iframe_div">
+				<div class="search_div">
+					<a href="queryAll.html" target="myIframe">查看全部</a>
+					&nbsp;&nbsp;
+					<a href="queryInfo.html" target="myIframe">我的留言</a>
+					&nbsp;&nbsp;
+					<a href="addMsg.html" target="myIframe">添加留言</a>
+				</div>
+				<iframe src="" frameborder="0" name="myIframe" class="myIframe"></iframe>
+			</div>
+		</div>
+		<script>
+			window.onload=()=>{
+				checkLogin();
+				loadData();
+			}
+			
+			function checkLogin(){
+				if(sessionStorage.getItem("info")==undefined){
+					location.href="login.html";
+				}
+			}
+			
+			function loadData(){
+				let v=new Vue({
+					el:"#app",
+					data:{
+						imgUrl:BASEURL+"/"+JSON.parse(sessionStorage.getItem("info")).headPicUrl,
+						name:JSON.parse(sessionStorage.getItem("info")).nickName
+					},
+					methods:{
+						logout:function(){
+							sessionStorage.removeItem("info");
+							location.href="login.html";
+						}
+					}
+				})
+			}
+		</script>
+	</body>
+</html>
